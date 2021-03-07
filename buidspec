@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+    build:
+        commands:
+            - aws s3 sync --exact-timestamps ./cloudformation/ s3://fileurl
+    post_build:
+        commands: 
+        #削除保護をtrueをつける
+            - aws cloudformation update-stack --stack-name ${Environment}
+              --region us-east-1 --template-url https://s3.amazonaws.com/  url
+              --parameters ${//environment}
+            - aws cloudformation update-termination-protection
+              --stack-name name --region us-east-1
+              --enable-termination-protection
+
+artifacts:
+    files:
+        - //出力先のs3等
